@@ -27,7 +27,7 @@ def setPort(ui, newPort):
 
 def connect(ui, port):
 	global s
-	s = serial.Serial(port, BAUDRATE, timeout=0.00001)
+	s = serial.Serial(port, BAUDRATE, timeout=0.01)
 	ui.changeState('Connexion à ' + port)
 	ui.update()
 	sleep(0.2)
