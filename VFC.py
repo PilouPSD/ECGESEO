@@ -67,8 +67,8 @@ class VFC():
 	def newPoint(self, x, y):
 
 		if (int(x) < self.testDuration):
-			self.points.append([int(x), 60/int(y.strip())])
-			self.VFCx.append(int(x))
+			self.points.append([int(x)/1000, 60/int(y.strip())])
+			self.VFCx.append(int(x)/1000)
 			self.VFCy.append(round(60/int(y.strip()), 5))
 
 			if (len(self.points) > 1):
