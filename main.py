@@ -7,6 +7,8 @@ import atexit
 
 s = None
 
+maxBPM = 700
+
 ports = listPorts()
 ui = UI(ports)
 
@@ -30,10 +32,10 @@ def main():
                     if (array[2] != ''):
                         ecg.newPoint(array[1], array[2])
 
-                        if (int(array[2]) >= 400 and not high):
+                        if (int(array[2]) >= maxBPM and not high):
                             high = True
                             ecg.BPMCalc(int(array[1]))
-                        elif (int(array[2]) <= 400 and high):
+                        elif (int(array[2]) <= maxBPM and high):
                             high = False
 
             elif (msg[:1] == 'V'):
