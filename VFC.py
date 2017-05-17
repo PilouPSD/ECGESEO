@@ -13,18 +13,26 @@ class VFC():
 		self.points = []
 		self.lines = []
 
-		self.testDuration = 60000
+		self.testDuration = 300000
 		
 		self.VFCx = []
 		self.VFCy = []
 
 		self.ui = ui
 
+		self.block = False
+
 	def calcVFC(self):
 
 		N = 3000000
 		x = np.linspace(self.VFCx[0], self.VFCx[-1], N)
 		y = np.interp(x, self.VFCx, self.VFCy)
+
+		file = open("save/thomas.ibi",'w',encoding="utf-8")
+
+		for i in range(len(self.VFCx)):
+			file.write(str(self.VFCx[i]) + ',' + str(self.VFCy[i]) + '\n')
+		file.close()
 
 		yDetrend = scipy.signal.detrend(y)
 		yf = scipy.fftpack.fft(yDetrend)[range(N//2)]
@@ -49,12 +57,6 @@ class VFC():
 
 		print(areaLF, areaHF, VFC)
 
-		file = open("save/thomas.ibi",'w',encoding="utf-8")
-
-		for i in range(len(self.VFCx)):
-			file.write(str(self.VFCx[i]) + ',' + str(self.VFCy[i]) + '\n')
-		file.close()
-
 		fig, ax = plt.subplots()
 		ax.plot(xf, yf)
 		ax.set_xlim(0,0.4)
@@ -62,7 +64,9 @@ class VFC():
 		fig2, ax2 = plt.subplots()
 		plt.scatter(self.VFCx, self.VFCy, s=4, color='red')
 		ax2.plot(x, y)
-		plt.show()
+		plt.show(block=False)
+
+		self.ui.resultVFC('VFC : ' + str(round(VFC, 3)))
 
 	def newPoint(self, x, y):
 
@@ -73,12 +77,14 @@ class VFC():
 
 			if (len(self.points) > 1):
 
-				x1 = ((self.points[-1][0] * 1000) / self.testDuration)
-				y1 = 190 - (round(self.points[-1][1],5) * 200) / 0.05 + 5
-				x2 = ((self.points[-2][0] * 1000) / self.testDuration)
-				y2 = 190 - (round(self.points[-2][1],5) * 200) / 0.05 + 5
+				x1 = (((self.points[-1][0] * 1000) / self.testDuration)) * 1000
+				y1 = 190 - (round(self.points[-1][1],5) * 200) / 1.5 + 5
+				x2 = (((self.points[-2][0] * 1000) / self.testDuration)) * 1000
+				y2 = 190 - (round(self.points[-2][1],5) * 200) / 1.5 + 5
 
 				self.lines.append(self.ui.createLineVFC(x1, y1, x2, y2))
 
 		else:
-			self.calcVFC()
+			if (not self.block):
+				self.calcVFC()
+				self.block = True

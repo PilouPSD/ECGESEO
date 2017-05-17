@@ -4,6 +4,7 @@ from time import *
 from ecg import *
 from VFC import *
 import atexit
+from sound import *
 
 s = None
 
@@ -30,13 +31,22 @@ def main():
 
                 if (len(array) == 3):
                     if (array[2] != ''):
-                        ecg.newPoint(array[1], array[2])
+                        go = True
+                        try:
+                           val = int(array[1])
+                           valLEL = int(array[2])
+                        except ValueError:
+                            go = False
+                            print(str(time()) + ' Erreur de transmission')
+                        if (go):
+                            ecg.newPoint(array[1], array[2])
 
-                        if (int(array[2]) >= maxBPM and not high):
-                            high = True
-                            ecg.BPMCalc(int(array[1]))
-                        elif (int(array[2]) <= maxBPM and high):
-                            high = False
+                            if (int(array[2]) >= maxBPM and not high):
+                                high = True
+                                ecg.BPMCalc(int(array[1]))
+                                playBip(ui.sound.get())
+                            elif (int(array[2]) <= maxBPM and high):
+                                high = False
 
             elif (msg[:1] == 'V'):
                 array = msg.split(';')

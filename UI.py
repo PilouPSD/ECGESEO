@@ -34,6 +34,10 @@ class UI(Tk):
 		self.c = Checkbutton(self, text='Débug', variable=self.debug, borderwidth=1)
 		self.c.place(x=1100, y=800)
 
+		self.sound = IntVar()
+		self.c2 = Checkbutton(self, text='Sound', variable=self.sound, borderwidth=1)
+		self.c2.place(x=1300, y=800)
+
 	def connected(self):
 		self.e.config(state='normal')
 
@@ -48,6 +52,12 @@ class UI(Tk):
 
 		self.ecgC = Canvas(self, width=1000, height=200, bg="light green")
 		self.ecgC.place(x=50, y=100)
+
+		self.btn1 = Button(self, width=20, text='ECG', command=lambda:com.sendECG(self))
+		self.btn1.place(x=325, y=380)
+
+		self.btn2 = Button(self, width=20, text='VFC', command=lambda:com.sendVFC(self))
+		self.btn2.place(x=625, y=380)
 
 	def UICommand(self, event):
 		command = self.e.get()
@@ -96,3 +106,7 @@ class UI(Tk):
 
 	def vfcSpread(self):
 		return self.vfc
+
+	def resultVFC(self, result):
+		self.result = Label(self, text=result, font=("Segoe UI", 20))
+		self.result.place(x=500, y=750)

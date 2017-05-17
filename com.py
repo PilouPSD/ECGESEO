@@ -3,8 +3,11 @@ import serial
 from ecg import *
 from time import sleep
 
-BAUDRATE = 2000000
+BAUDRATE = 500000
 s = None
+
+ECGActif = True
+VFCActif = False
 
 def listPorts():
 
@@ -27,7 +30,7 @@ def setPort(ui, newPort):
 
 def connect(ui, port):
 	global s
-	s = serial.Serial(port, BAUDRATE, timeout=0.01)
+	s = serial.Serial(port, BAUDRATE, timeout=0.05)
 	ui.changeState('Connexion à ' + port)
 	ui.update()
 	sleep(0.2)
@@ -79,3 +82,19 @@ def read(ui):
 		close()
 		ui.changeState(' Connexion perdue')
 		ui.log(' Déconnecté', 'INFO')
+
+def sendECG(ui):
+	global ECGActif
+	if (ECGActif):
+		send(ui, 'STOP DISPLAY')
+	else:
+		send(ui, 'START DISPLAY')
+	ECGActif = not ECGActif
+
+def sendVFC(ui):
+	global VFCActif
+	if (VFCActif):
+		send(ui, 'STOP VFC')
+	else:
+		send(ui, 'START VFC')
+	VFCActif = not VFCActif
